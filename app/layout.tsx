@@ -14,8 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Joki Management App",
+  title: "HiroReceipt",
   description: "Order and tracking management for freelance services",
+  icons: {
+    icon: "/hiroreceipt.svg",
+    shortcut: "/hiroreceipt.svg",
+    apple: "/hiroreceipt.svg",
+  },
 };
 
 export default function RootLayout({

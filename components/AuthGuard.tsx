@@ -12,7 +12,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (!loading) {
       if (!user) {
         // Not logged in -> Redirect to admin login page
-        router.push("/admin/login");
+        router.push("/hiroatmin/login");
       } else if (!isAdmin) {
         // Logged in but not admin -> Redirect to unauthorized or home
         router.push("/unauthorized");

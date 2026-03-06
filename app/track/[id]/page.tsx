@@ -9,6 +9,7 @@ import { Timeline } from "@/components/Timeline";
 import { DeliveryBox } from "@/components/DeliveryBox";
 import { Invoice } from "@/components/Invoice";
 import { Receipt, Search, Download } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams as nextUseParams } from "next/navigation";
 
@@ -138,8 +139,13 @@ export default function TrackingPage() {
       <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-sm shadow-emerald-500/20">
-              <Receipt size={16} />
+            <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden">
+              <Image
+                src="/hiroreceipt.svg"
+                alt="HiroReceipt"
+                width={24}
+                height={24}
+              />
             </div>
             <span className="font-bold text-lg text-slate-900">
               HiroReceipt
