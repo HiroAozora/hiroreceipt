@@ -34,10 +34,14 @@ export default function TrackingPage() {
 
     try {
       setDownloading(true);
-      const { toPng } = await import("html-to-image");
+      const { toJpeg } = await import("html-to-image");
       const { jsPDF } = await import("jspdf");
 
-      const dataUrl = await toPng(element, { quality: 0.98, pixelRatio: 2 });
+      const dataUrl = await toJpeg(element, {
+        quality: 0.88,
+        pixelRatio: 1.5,
+        backgroundColor: "#ffffff",
+      });
 
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -48,7 +52,7 @@ export default function TrackingPage() {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (element.offsetHeight * pdfWidth) / element.offsetWidth;
 
-      pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(dataUrl, "JPEG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Invoice_${order.id}.pdf`);
     } catch (err) {
       console.error("Gagal men-download PDF", err);
