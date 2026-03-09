@@ -126,9 +126,9 @@ export default function TrackingPage() {
   const getProgressDesc = (status: string) => {
     switch (status) {
       case "Menunggu":
-        return "Materi diterima, saat ini joki sedang menjadwalkan pengerjaan. Mohon ditunggu.";
+        return "Materi diterima, saat ini admin sedang menjadwalkan pengerjaan. Mohon ditunggu.";
       case "Dikerjakan":
-        return "Joki sedang mengeksekusi tugas Anda. Anda bisa memantau update terbaru lewat sini.";
+        return "Worker sedang mengeksekusi tugas Anda. Anda bisa memantau update terbaru lewat sini.";
       case "Revisi":
         return "Sedang dilakukan penyesuaian/revisi berdasarkan feedback yang diberikan.";
       case "Selesai":
@@ -254,10 +254,14 @@ export default function TrackingPage() {
               </div>
               <div className="text-left">
                 <p className="font-bold text-slate-900">
-                  {order.status.payment === "Lunas" ? "Lihat Receipt" : "Lihat Invoice"}
+                  {order.status.payment === "Lunas"
+                    ? "Lihat Receipt"
+                    : "Lihat Invoice"}
                 </p>
                 <p className="text-xs text-slate-400">
-                  {showInvoice ? "Klik untuk menyembunyikan" : "Klik untuk melihat detail tagihan"}
+                  {showInvoice
+                    ? "Klik untuk menyembunyikan"
+                    : "Klik untuk melihat detail tagihan"}
                 </p>
               </div>
             </div>
