@@ -8,7 +8,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Timeline } from "@/components/Timeline";
 import { DeliveryBox } from "@/components/DeliveryBox";
 import { Invoice } from "@/components/Invoice";
-import { Receipt, Search, Download } from "lucide-react";
+import { Receipt, Search, Download, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams as nextUseParams } from "next/navigation";
@@ -26,6 +26,7 @@ export default function TrackingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [showInvoice, setShowInvoice] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadPDF = async () => {
@@ -240,6 +241,42 @@ export default function TrackingPage() {
             googleDriveLink={order.delivery.googleDriveLink}
           />
         )}
+
+        {/* Collapsible Invoice Section */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+          <button
+            onClick={() => setShowInvoice((prev) => !prev)}
+            className="w-full flex items-center justify-between px-6 md:px-10 py-5 hover:bg-slate-50 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Receipt size={18} />
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-slate-900">
+                  {order.status.payment === "Lunas" ? "Lihat Receipt" : "Lihat Invoice"}
+                </p>
+                <p className="text-xs text-slate-400">
+                  {showInvoice ? "Klik untuk menyembunyikan" : "Klik untuk melihat detail tagihan"}
+                </p>
+              </div>
+            </div>
+            <ChevronDown
+              size={20}
+              className={`text-slate-400 transition-transform duration-300 ${
+                showInvoice ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {showInvoice && (
+            <div className="border-t border-slate-100 bg-slate-50 p-2 sm:p-6 overflow-x-auto animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="min-w-[600px] max-w-[800px] mx-auto">
+                <Invoice order={order} />
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Timeline Section */}
         <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200">
