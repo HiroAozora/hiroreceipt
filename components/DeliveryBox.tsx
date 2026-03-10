@@ -55,8 +55,7 @@ export function DeliveryBox({
         </div>
         <h3 className="font-bold text-lg mb-1">Akses Terkunci</h3>
         <p className="text-slate-400 text-sm mb-4">
-          Lunaasi pembayaran atau DP untuk membuka link Google Drive hasil
-          pekerjaan.
+          Lunasi pembayaran atau DP untuk membuka link hasil pekerjaan.
         </p>
         <div className="w-full bg-slate-700/50 border border-slate-600/50 px-4 py-3 rounded-xl cursor-not-allowed flex items-center justify-center gap-2">
           <LockKeyhole size={16} className="text-slate-500" />
