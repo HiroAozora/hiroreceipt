@@ -111,13 +111,18 @@ export const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(
         <table className="w-full border-collapse mb-8 text-left">
           <thead>
             <tr>
-              <th className="bg-slate-50 py-3 px-4 border-y-[2px] border-slate-200 text-[12px] font-semibold uppercase tracking-widest w-[55%]">
+              <th className="bg-slate-50 py-3 px-4 border-y-2 border-slate-200 text-[12px] font-semibold uppercase tracking-widest">
                 DESKRIPSI ITEM
               </th>
-              <th className="bg-slate-50 py-3 px-4 border-y-[2px] border-slate-200 text-[12px] font-semibold uppercase tracking-widest text-center w-[15%]">
+              <th className="bg-slate-50 py-3 px-4 border-y-2 border-slate-200 text-[12px] font-semibold uppercase tracking-widest text-center w-[10%]">
                 QTY
               </th>
-              <th className="bg-slate-50 py-3 px-4 border-y-[2px] border-slate-200 text-[12px] font-semibold uppercase tracking-widest text-right w-[30%]">
+              {items.some((i: any) => i.deadline) && (
+                <th className="bg-slate-50 py-3 px-4 border-y-2 border-slate-200 text-[12px] font-semibold uppercase tracking-widest text-center w-[18%]">
+                  DEADLINE
+                </th>
+              )}
+              <th className="bg-slate-50 py-3 px-4 border-y-2 border-slate-200 text-[12px] font-semibold uppercase tracking-widest text-right w-[22%]">
                 HARGA
               </th>
             </tr>
@@ -138,6 +143,17 @@ export const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(
                 <td className="py-4 px-4 border-b border-slate-200 align-top text-center font-medium">
                   {item.qty}
                 </td>
+                {items.some((i: any) => i.deadline) && (
+                  <td className="py-4 px-4 border-b border-slate-200 align-top text-center text-[13px] text-slate-700">
+                    {item.deadline
+                      ? new Date(item.deadline).toLocaleDateString("id-ID", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "-"}
+                  </td>
+                )}
                 <td className="py-4 px-4 border-b border-slate-200 align-top text-right font-medium text-slate-900">
                   Rp{" "}
                   {(Number(item.price) * Number(item.qty)).toLocaleString(

@@ -6,9 +6,10 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Invoice } from "@/components/Invoice";
-import { Printer, ArrowLeft, Trash2, Edit } from "lucide-react";
+import { Printer, ArrowLeft, Trash2, Edit, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import { useParams as nextUseParams } from "next/navigation";
+import clsx from "clsx";
 
 export default function AdminOrderDetailPage() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function AdminOrderDetailPage() {
 
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function AdminOrderDetailPage() {
         setOrder({ id: docSnap.id, ...docSnap.data() });
       } else {
         alert("Order tidak ditemukan");
-        router.push("/admin");
+        router.push("/hiroatmin");
       }
     } catch (err) {
       console.error(err);
@@ -48,6 +50,13 @@ export default function AdminOrderDetailPage() {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleCopyLink = async () => {
+    const url = `${window.location.origin}/track/${order.id}`;
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownloadPDF = async () => {
@@ -106,7 +115,7 @@ export default function AdminOrderDetailPage() {
       <div className="flex items-center justify-between mb-8 print:hidden">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin"
+            href="/hiroatmin"
             className="p-2 bg-white rounded-xl border border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm transition-all"
           >
             <ArrowLeft size={20} />
@@ -131,7 +140,7 @@ export default function AdminOrderDetailPage() {
           </button>
 
           <Link
-            href={`/admin/orders/${order.id}/edit-details`}
+            href={`/hiroatmin/orders/${order.id}/edit-details`}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-medium transition-colors shadow-sm"
           >
             <Edit size={16} />
@@ -139,7 +148,7 @@ export default function AdminOrderDetailPage() {
           </Link>
 
           <Link
-            href={`/admin/orders/${order.id}/edit`}
+            href={`/hiroatmin/orders/${order.id}/edit`}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-medium transition-colors shadow-sm"
           >
             <Edit size={16} />
@@ -207,8 +216,20 @@ export default function AdminOrderDetailPage() {
                   target="_blank"
                   className="text-sm font-medium text-blue-600 hover:underline break-all"
                 >
-                  {window.location.origin}/track/{order.id}
+                  {typeof window !== "undefined" ? window.location.origin : ""}/track/{order.id}
                 </a>
+                <button
+                  onClick={handleCopyLink}
+                  className={clsx(
+                    "mt-2 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all",
+                    copied
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-600",
+                  )}
+                >
+                  {copied ? <Check size={13} /> : <Copy size={13} />}
+                  {copied ? "Copied!" : "Copy Link"}
+                </button>
               </div>
             </div>
           </div>
@@ -245,6 +266,18 @@ export default function AdminOrderDetailPage() {
               </p>
             )}
           </div>
+
+          {/* Admin Notes (private) */}
+          {order.adminNotes && (
+            <div className="bg-amber-50 border border-amber-200 p-5 rounded-2xl shadow-sm">
+              <h3 className="font-semibold text-amber-800 mb-2 text-sm flex items-center gap-1.5">
+                📌 Catatan Internal
+              </h3>
+              <p className="text-sm text-amber-700 whitespace-pre-wrap">
+                {order.adminNotes}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right Col: Invoice Preview (Will be the ONLY visible part in @media print) */}

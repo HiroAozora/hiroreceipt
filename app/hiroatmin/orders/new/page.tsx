@@ -23,6 +23,7 @@ export type OrderItem = {
   addon: string;
   qty: number;
   price: number;
+  deadline?: string;
 };
 
 export default function NewOrderPage() {
@@ -51,7 +52,7 @@ export default function NewOrderPage() {
   const total = Math.max(0, subtotal - Number(discount || 0));
 
   const handleAddItem = () => {
-    setItems([...items, { name: "", addon: "", qty: 1, price: 0 }]);
+    setItems([...items, { name: "", addon: "", qty: 1, price: 0, deadline: "" }]);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -84,6 +85,7 @@ export default function NewOrderPage() {
             addon: item.addon,
             qty: Number(item.qty),
             price: Number(item.price),
+            deadline: item.deadline || "",
           })),
           discount: Number(discount),
           subtotal,
@@ -111,7 +113,7 @@ export default function NewOrderPage() {
         },
       });
 
-      router.push("/admin");
+      router.push("/hiroatmin");
       router.refresh();
     } catch (error) {
       console.error("Error creating order:", error);
@@ -285,6 +287,21 @@ export default function NewOrderPage() {
                         className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 outline-none transition-all placeholder:text-slate-400"
                       />
                     </div>
+                  </div>
+
+                  {/* Deadline per item */}
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                      Deadline (Opsional)
+                    </label>
+                    <input
+                      type="date"
+                      value={item.deadline || ""}
+                      onChange={(e) =>
+                        updateItem(index, "deadline", e.target.value)
+                      }
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 outline-none transition-all text-slate-700"
+                    />
                   </div>
 
                   <div className="grid grid-cols-4 gap-4">

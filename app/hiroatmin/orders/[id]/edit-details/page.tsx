@@ -13,6 +13,7 @@ export type OrderItem = {
   addon: string;
   qty: number;
   price: number;
+  deadline?: string;
 };
 
 export default function EditOrderDetailsPage() {
@@ -64,7 +65,7 @@ export default function EditOrderDetailsPage() {
           setDiscount(data.orderDetails?.discount || 0);
         } else {
           alert("Order tidak ditemukan");
-          router.push("/admin");
+          router.push("/hiroatmin");
         }
       } catch (err) {
         console.error(err);
@@ -82,7 +83,7 @@ export default function EditOrderDetailsPage() {
   const total = Math.max(0, subtotal - Number(discount || 0));
 
   const handleAddItem = () => {
-    setItems([...items, { name: "", addon: "", qty: 1, price: 0 }]);
+    setItems([...items, { name: "", addon: "", qty: 1, price: 0, deadline: "" }]);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -113,6 +114,7 @@ export default function EditOrderDetailsPage() {
           addon: item.addon,
           qty: Number(item.qty),
           price: Number(item.price),
+          deadline: item.deadline || "",
         })),
         "orderDetails.discount": Number(discount),
         "orderDetails.subtotal": subtotal,
@@ -120,7 +122,7 @@ export default function EditOrderDetailsPage() {
         "metadata.updatedAt": serverTimestamp(),
       });
 
-      router.push(`/admin/orders/${order.id}`);
+      router.push(`/hiroatmin/orders/${order.id}`);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -142,7 +144,7 @@ export default function EditOrderDetailsPage() {
     <div className="max-w-4xl mx-auto pb-10 animate-in fade-in duration-500">
       <div className="flex items-center gap-4 mb-8">
         <Link
-          href={`/admin/orders/${order.id}`}
+          href={`/hiroatmin/orders/${order.id}`}
           className="p-2 bg-white rounded-xl border border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm transition-all"
         >
           <ArrowLeft size={20} />
@@ -256,6 +258,21 @@ export default function EditOrderDetailsPage() {
                         className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 outline-none transition-all placeholder:text-slate-400"
                       />
                     </div>
+                  </div>
+
+                  {/* Deadline per item */}
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                      Deadline (Opsional)
+                    </label>
+                    <input
+                      type="date"
+                      value={item.deadline || ""}
+                      onChange={(e) =>
+                        updateItem(index, "deadline", e.target.value)
+                      }
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 outline-none transition-all text-slate-700"
+                    />
                   </div>
 
                   <div className="grid grid-cols-4 gap-4">

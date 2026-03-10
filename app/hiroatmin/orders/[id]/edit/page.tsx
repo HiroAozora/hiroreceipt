@@ -29,6 +29,7 @@ export default function AdminEditOrderPage() {
   const [forceShowLink, setForceShowLink] = useState(false);
   const [driveLink, setDriveLink] = useState("");
   const [newTimelineDesc, setNewTimelineDesc] = useState("");
+  const [adminNotes, setAdminNotes] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -44,9 +45,10 @@ export default function AdminEditOrderPage() {
           setProgressStatus(data.status?.progress || "Menunggu");
           setForceShowLink(data.delivery?.forceShowLink || false);
           setDriveLink(data.delivery?.googleDriveLink || "");
+          setAdminNotes(data.adminNotes || "");
         } else {
           alert("Order tidak ditemukan");
-          router.push("/admin");
+          router.push("/hiroatmin");
         }
       } catch (err) {
         console.error(err);
@@ -70,6 +72,7 @@ export default function AdminEditOrderPage() {
         "status.progress": progressStatus,
         "delivery.googleDriveLink": driveLink,
         "delivery.forceShowLink": forceShowLink,
+        adminNotes: adminNotes,
         "metadata.updatedAt": serverTimestamp(),
       };
 
@@ -84,7 +87,7 @@ export default function AdminEditOrderPage() {
       }
 
       await updateDoc(docRef, updatePayload);
-      router.push(`/admin/orders/${order.id}`);
+      router.push(`/hiroatmin/orders/${order.id}`);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -218,6 +221,23 @@ export default function AdminEditOrderPage() {
                 </span>
               </div>
             </label>
+          </div>
+
+          {/* Internal Admin Notes */}
+          <div className="border-t border-slate-100 pt-6">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              📌 Catatan Internal Admin (Tidak terlihat oleh klien)
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Catatan pribadi tentang order ini, konteks pengerjaan, dll."
+              value={adminNotes}
+              onChange={(e) => setAdminNotes(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl border border-amber-200 bg-amber-50 focus:border-amber-400 focus:ring-2 focus:ring-amber-100 outline-none transition-all resize-none text-sm"
+            ></textarea>
+            <p className="text-xs text-amber-600 mt-1 font-medium">
+              ⚠️ Hanya terlihat di dashboard admin, tidak muncul di invoice atau tracking publik.
+            </p>
           </div>
 
           <div className="border-t border-slate-100 pt-6">
