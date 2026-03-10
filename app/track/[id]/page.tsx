@@ -297,8 +297,8 @@ export default function TrackingPage() {
         </div>
       </main>
 
-      {/* Off-screen Invoice for html-to-image */}
-      <div className="absolute left-[9999px] top-0 overflow-hidden pointer-events-none opacity-0">
+      {/* Off-screen Invoice for html-to-image — use `fixed` not `absolute` to avoid expanding page width */}
+      <div className="fixed left-[9999px] top-0 overflow-hidden pointer-events-none opacity-0">
         <div ref={printRef} className="w-[800px] bg-white">
           <Invoice order={order} />
         </div>
