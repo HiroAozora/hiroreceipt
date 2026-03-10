@@ -13,7 +13,7 @@ export default function AdminLoginPage() {
   useEffect(() => {
     if (!loading && user) {
       if (isAdmin) {
-        router.push("/admin");
+        router.push("/hiroatmin");
       } else {
         router.push("/unauthorized");
       }

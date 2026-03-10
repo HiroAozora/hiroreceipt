@@ -95,7 +95,7 @@ export default function AdminOrderDetailPage() {
     if (!confirm("Yakin ingin menghapus order ini secara permanen?")) return;
     try {
       await deleteDoc(doc(db, "orders", id));
-      router.push("/admin");
+      router.push("/hiroatmin");
     } catch (error) {
       console.error("Gagal menghapus:", error);
     }

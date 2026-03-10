@@ -175,7 +175,7 @@ export default function NewOrderPage() {
     <div className="max-w-4xl mx-auto pb-10 animate-in fade-in duration-500">
       <div className="flex items-center gap-4 mb-8">
         <Link
-          href="/admin"
+          href="/hiroatmin"
           className="p-2 bg-white rounded-xl border border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm transition-all"
         >
           <ArrowLeft size={20} />

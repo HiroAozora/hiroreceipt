@@ -109,7 +109,7 @@ export default function AdminEditOrderPage() {
     <div className="max-w-3xl mx-auto pb-20 animate-in fade-in duration-500">
       <div className="flex items-center gap-4 mb-8">
         <Link
-          href={`/admin/orders/${order.id}`}
+          href={`/hiroatmin/orders/${order.id}`}
           className="p-2 bg-white rounded-xl border border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm transition-all"
         >
           <ArrowLeft size={20} />
