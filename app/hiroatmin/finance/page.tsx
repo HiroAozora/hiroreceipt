@@ -128,7 +128,9 @@ export default function FinancePage() {
             <p className="text-2xl font-bold">
               {loading ? "-" : `Rp ${stats.collected.toLocaleString("id-ID")}`}
             </p>
-            <p className="text-emerald-200 text-xs mt-1">{stats.countLunas} order terbayar</p>
+            <p className="text-emerald-200 text-xs mt-1">
+              {stats.countLunas} lunas + DP masuk
+            </p>
           </div>
         </div>
 
@@ -141,9 +143,11 @@ export default function FinancePage() {
               <span className="text-blue-100 text-sm font-medium uppercase tracking-wide">DP / Sebagian</span>
             </div>
             <p className="text-2xl font-bold">
-              {loading ? "-" : `Rp ${stats.dp.toLocaleString("id-ID")}`}
+              {loading ? "-" : `Rp ${stats.dpRemaining.toLocaleString("id-ID")}`}
             </p>
-            <p className="text-blue-200 text-xs mt-1">{stats.countDP} order belum lunas</p>
+            <p className="text-blue-200 text-xs mt-1">
+              Sisa dari {stats.countDP} order DP
+            </p>
           </div>
         </div>
 
@@ -182,7 +186,7 @@ export default function FinancePage() {
             />
             <div
               className="h-full bg-blue-400 transition-all"
-              style={{ width: `${(stats.dp / stats.total) * 100}%` }}
+              style={{ width: `${(stats.dpRemaining / stats.total) * 100}%` }}
             />
             <div
               className="h-full bg-red-300 transition-all"
@@ -192,11 +196,11 @@ export default function FinancePage() {
           <div className="flex items-center gap-4 mt-3 text-xs text-slate-500">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
-              Lunas ({Math.round((stats.collected / stats.total) * 100)}%)
+              Terkumpul ({Math.round((stats.collected / stats.total) * 100)}%)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block" />
-              DP ({Math.round((stats.dp / stats.total) * 100)}%)
+              Sisa DP ({Math.round((stats.dpRemaining / stats.total) * 100)}%)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-red-300 inline-block" />
@@ -233,7 +237,7 @@ export default function FinancePage() {
                   <th className="px-6 py-3 font-medium">Client</th>
                   <th className="px-6 py-3 font-medium">Layanan</th>
                   <th className="px-6 py-3 font-medium">Status Bayar</th>
-                  <th className="px-6 py-3 font-medium text-right">Tagihan</th>
+                  <th className="px-6 py-3 font-medium text-right">Sisa Tagihan</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -265,7 +269,21 @@ export default function FinancePage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right font-bold text-slate-900">
-                        Rp {getOrderValue(order).toLocaleString("id-ID")}
+                        {(() => {
+                          const total = getOrderValue(order);
+                          const dpPaid = (order.status as any).dpAmount || 0;
+                          const sisa = order.status.payment === "DP" ? total - dpPaid : total;
+                          return (
+                            <div>
+                              <span>Rp {sisa.toLocaleString("id-ID")}</span>
+                              {order.status.payment === "DP" && dpPaid > 0 && (
+                                <div className="text-xs text-blue-500 font-normal mt-0.5">
+                                  DP masuk: Rp {dpPaid.toLocaleString("id-ID")}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </td>
                     </tr>
                   ))}
