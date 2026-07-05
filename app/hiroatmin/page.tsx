@@ -42,6 +42,9 @@ export default function AdminDashboardPage() {
   const [progressFilter, setProgressFilter] = useState("Semua");
 
   const stats = useMemo(() => {
+    const orderValue = (o: OrderData) =>
+      o.orderDetails.total ?? o.orderDetails.price ?? 0;
+
     const totalOrders = allOrders.length;
     const inProgress = allOrders.filter(
       (o) =>
@@ -51,12 +54,22 @@ export default function AdminDashboardPage() {
       (o) =>
         o.status.payment === "Belum Bayar" || o.status.payment === "DP",
     ).length;
-    const collectedRevenue = allOrders
-      .filter((o) => o.status.payment === "Lunas")
-      .reduce((acc, o) => acc + (o.orderDetails.total ?? o.orderDetails.price ?? 0), 0);
-    const pendingRevenue = allOrders
-      .filter((o) => o.status.payment !== "Lunas")
-      .reduce((acc, o) => acc + (o.orderDetails.total ?? o.orderDetails.price ?? 0), 0);
+
+    const collectedRevenue = allOrders.reduce((acc, o) => {
+      if (o.status.payment === "Lunas") return acc + orderValue(o);
+      if (o.status.payment === "DP") return acc + ((o.status as any).dpAmount || 0);
+      return acc;
+    }, 0);
+
+    const pendingRevenue = allOrders.reduce((acc, o) => {
+      if (o.status.payment === "DP") {
+        const sisa = orderValue(o) - ((o.status as any).dpAmount || 0);
+        return acc + Math.max(0, sisa);
+      }
+      if (o.status.payment === "Belum Bayar") return acc + orderValue(o);
+      return acc;
+    }, 0);
+
     return { totalOrders, inProgress, awaitingPayment, collectedRevenue, pendingRevenue };
   }, [allOrders]);
 
