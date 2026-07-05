@@ -177,14 +177,24 @@ export const Invoice = forwardRef<HTMLDivElement, InvoiceProps>(
               <span>- Rp {discount.toLocaleString("id-ID")}</span>
             </div>
           )}
-          <div className="flex justify-between py-1.5 text-[14px] text-slate-600">
-            <span>Sudah Dibayar</span>
-            <span>(Rp {isLunas ? total.toLocaleString("id-ID") : "0"})</span>
-          </div>
-          <div className="flex justify-between mt-3 pt-3.5 border-t-[3px] border-slate-900 font-bold text-[18px] text-slate-900">
-            <span>SISA TAGIHAN</span>
-            <span>Rp {isLunas ? 0 : total.toLocaleString("id-ID")}</span>
-          </div>
+          {(() => {
+            const dpAmount = order.status?.dpAmount || 0;
+            const isDP = order.status?.payment === "DP";
+            const paidAmount = isLunas ? total : (isDP ? dpAmount : 0);
+            const remaining = Math.max(0, total - paidAmount);
+            return (
+              <>
+                <div className="flex justify-between py-1.5 text-[14px] text-slate-600">
+                  <span>Sudah Dibayar{isDP ? " (DP)" : ""}</span>
+                  <span>(Rp {paidAmount.toLocaleString("id-ID")})</span>
+                </div>
+                <div className="flex justify-between mt-3 pt-3.5 border-t-[3px] border-slate-900 font-bold text-[18px] text-slate-900">
+                  <span>SISA TAGIHAN</span>
+                  <span>Rp {remaining.toLocaleString("id-ID")}</span>
+                </div>
+              </>
+            );
+          })()}
         </div>
         <div className="clear-both"></div>
 

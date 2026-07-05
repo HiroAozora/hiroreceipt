@@ -30,6 +30,7 @@ export default function AdminEditOrderPage() {
   const [driveLink, setDriveLink] = useState("");
   const [newTimelineDesc, setNewTimelineDesc] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
+  const [dpAmount, setDpAmount] = useState<number>(0);
 
   useEffect(() => {
     if (!id) return;
@@ -46,6 +47,7 @@ export default function AdminEditOrderPage() {
           setForceShowLink(data.delivery?.forceShowLink || false);
           setDriveLink(data.delivery?.googleDriveLink || "");
           setAdminNotes(data.adminNotes || "");
+          setDpAmount(data.status?.dpAmount || 0);
         } else {
           alert("Order tidak ditemukan");
           router.push("/hiroatmin");
@@ -70,6 +72,7 @@ export default function AdminEditOrderPage() {
       const updatePayload: any = {
         "status.payment": paymentStatus,
         "status.progress": progressStatus,
+        "status.dpAmount": paymentStatus === "DP" ? Number(dpAmount) : (paymentStatus === "Lunas" ? 0 : 0),
         "delivery.googleDriveLink": driveLink,
         "delivery.forceShowLink": forceShowLink,
         adminNotes: adminNotes,
@@ -157,6 +160,27 @@ export default function AdminEditOrderPage() {
                 <option value="DP">DP (Sebagian)</option>
                 <option value="Lunas">Lunas</option>
               </select>
+
+              {/* DP Amount - conditional */}
+              {paymentStatus === "DP" && (
+                <div className="mt-3">
+                  <label className="block text-xs font-medium text-blue-700 mb-1">
+                    Nominal DP Dibayar (Rp)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium text-sm">Rp</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="50000"
+                      value={dpAmount || ""}
+                      onChange={(e) => setDpAmount(Number(e.target.value))}
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-blue-200 bg-blue-50 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm font-medium"
+                    />
+                  </div>
+                  <p className="text-xs text-blue-500 mt-1">Sisa tagihan akan dihitung otomatis di invoice.</p>
+                </div>
+              )}
             </div>
 
             <div>

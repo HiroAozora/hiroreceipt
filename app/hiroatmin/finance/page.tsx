@@ -56,14 +56,30 @@ export default function FinancePage() {
     const dp = orders.filter((o) => o.status.payment === "DP");
     const belum = orders.filter((o) => o.status.payment === "Belum Bayar");
 
-    const sum = (arr: OrderData[]) =>
-      arr.reduce((acc, o) => acc + (o.orderDetails.total ?? o.orderDetails.price ?? 0), 0);
+    const orderValue = (o: OrderData) => o.orderDetails.total ?? o.orderDetails.price ?? 0;
+
+    const collectedRevenue =
+      lunas.reduce((acc, o) => acc + orderValue(o), 0) +
+      dp.reduce((acc, o) => acc + ((o.status as any).dpAmount || 0), 0);
+
+    const dpFaceValue = dp.reduce((acc, o) => acc + orderValue(o), 0);
+    const dpPaid = dp.reduce((acc, o) => acc + ((o.status as any).dpAmount || 0), 0);
+    const dpRemaining = dpFaceValue - dpPaid;
+
+    const pendingRevenue =
+      belum.reduce((acc, o) => acc + orderValue(o), 0) + dpRemaining;
+
+    const totalBilled =
+      orders.reduce((acc, o) => acc + orderValue(o), 0);
 
     return {
-      total: sum(orders),
-      collected: sum(lunas),
-      dp: sum(dp),
-      pending: sum(belum),
+      total: totalBilled,
+      collected: collectedRevenue,
+      dp: dpFaceValue,
+      dpPaid,
+      dpRemaining,
+      pending: belum.reduce((acc, o) => acc + orderValue(o), 0),
+      pendingAll: pendingRevenue,
       countLunas: lunas.length,
       countDP: dp.length,
       countBelum: belum.length,
