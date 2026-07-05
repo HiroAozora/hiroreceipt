@@ -75,7 +75,11 @@ export default function AdminDashboardPage() {
 
   const filteredOrders = useMemo(() => {
     let result = allOrders;
-    if (paymentFilter !== "Semua") {
+    if (paymentFilter === "Belum Lunas") {
+      result = result.filter(
+        (o) => o.status.payment === "Belum Bayar" || o.status.payment === "DP",
+      );
+    } else if (paymentFilter !== "Semua") {
       result = result.filter((o) => o.status.payment === paymentFilter);
     }
     if (progressFilter !== "Semua") {
@@ -187,7 +191,7 @@ export default function AdminDashboardPage() {
 
         {/* Awaiting Payment */}
         <button
-          onClick={() => handleStatCardClick("Belum Bayar", "Semua")}
+          onClick={() => handleStatCardClick("Belum Lunas", "Semua")}
           className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group text-left hover:border-red-300 hover:shadow-md transition-all"
         >
           <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-red-50 rounded-full transition-transform group-hover:scale-150 duration-500" />
@@ -254,6 +258,7 @@ export default function AdminDashboardPage() {
                 className="pl-8 pr-4 py-2 text-sm rounded-xl border border-slate-200 focus:border-emerald-400 outline-none bg-white appearance-none w-full sm:w-36"
               >
                 <option value="Semua">Semua</option>
+                <option value="Belum Lunas">Belum Lunas</option>
                 <option value="Lunas">Lunas</option>
                 <option value="DP">DP</option>
                 <option value="Belum Bayar">Belum Bayar</option>
